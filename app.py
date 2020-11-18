@@ -75,11 +75,7 @@ def stations():
 
     """Return a list of stations data"""
     # Columns for selection
-    sel = [Station.station
-            ,Station.name
-            ,Station.latitude
-            ,Station.longitude
-        ]
+    sel = [Station.name]
 
     # Retrieving the Station data
     station_data = session.query(*sel).all()
@@ -142,9 +138,7 @@ def temp_stats_by_date_range(start,end=None):
 
     """Return a list of stations data"""
     # Columns for selection
-    sel = [Measurement.station
-            ,Measurement.date
-            ,func.min(Measurement.tobs)
+    sel = [func.min(Measurement.tobs)
             ,func.max(Measurement.tobs)
             ,func.avg(Measurement.tobs)
             ]
@@ -153,13 +147,11 @@ def temp_stats_by_date_range(start,end=None):
     if end==None:
         station_data = session.query(*sel).\
                     filter(Measurement.date >= start_date).\
-                    group_by(Measurement.station, Measurement.date).\
                     all()
     else:
         station_data = session.query(*sel).\
                     filter(Measurement.date >= start_date).\
                     filter(Measurement.date <= end_date).\
-                    group_by(Measurement.station, Measurement.date).\
                     all()
 
     session.close()
